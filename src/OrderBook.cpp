@@ -314,19 +314,9 @@ void OrderBook::insertOrder(OrderBookEntry& order)
 
 std::vector<OrderBookEntry> OrderBook::matchAsksToBids(std::string product, std::string timestamp)
 {
-// // asks = orderbook.asks
-//     std::vector<OrderBookEntry> asks = getOrders(OrderBookType::ask, 
-//                                                  product, 
-//                                                  timestamp);
-// // bids = orderbook.bids
-//     std::vector<OrderBookEntry> bids = getOrders(OrderBookType::bid, 
-//                                                  product, 
-//                                                     timestamp);
-
     std::pair<std::vector<OrderBookEntry>, std::vector<OrderBookEntry>> orders = getOrdersByBidAsk(product, timestamp);
     std::vector<OrderBookEntry> bids = orders.first;
     std::vector<OrderBookEntry> asks = orders.second;
-
 
     // sales = []
     std::vector<OrderBookEntry> sales; 
