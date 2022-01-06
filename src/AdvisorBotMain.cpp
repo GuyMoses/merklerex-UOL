@@ -14,6 +14,8 @@ AdvisorBotMain::AdvisorBotMain()
 void AdvisorBotMain::init()
 {
     currentTime = orderBook.getEarliestTime();
+    std::map<std::string, int> commandsCounter;
+
     printHelp();
 
     while(true)
@@ -83,6 +85,7 @@ void AdvisorBotMain::printHelp()
     printPredict();
     printTime();
     printStep();
+    printStats();
     std::cout << std::endl;
 }
 
@@ -266,17 +269,31 @@ void AdvisorBotMain::printStep()
 {
     std::cout << "step" << "\t\t" << "Move to next time step" << std::endl;
 }
-
-void AdvisorBotMain::printInvalidCommand()
-{
-    std::cout << "Invalid input. type help, to see available commands" << std::endl;
-}
    
 void AdvisorBotMain::handleStep()
 {
     std::cout << "Going to next time frame. " << std::endl;
     currentTime = orderBook.getNextTime(currentTime);
     handleTime();
+}
+
+void AdvisorBotMain::printStats()
+{
+    std::cout << "stats" << "\t\t" << "Print AdvisorBot stats" << std::endl;
+}
+
+void AdvisorBotMain::handleStats()
+{
+    std::cout << "# of commands calls:" << std::endl;
+    for (auto const& command : commandsCounter)
+    {
+        std::cout << command.first << ":" << "\t" << command.second << std::endl;
+    }
+}
+
+void AdvisorBotMain::printInvalidCommand()
+{
+    std::cout << "Invalid input. type help, to see available commands" << std::endl;
 }
  
 std::vector<std::string> AdvisorBotMain::getUserInput()
@@ -304,21 +321,32 @@ void AdvisorBotMain::processUserInput(std::vector<std::string> input)
 
     std::cout << std::endl;
     if (input[0] == "help") {
+        commandsCounter["help"] ++;
         handleHelp(input);
     } else if (input[0] == "prod") {
+        commandsCounter["prod"] ++;
         handleProd();
     } else if (input[0] == "min") {
+        commandsCounter["min"] ++;
         handleMin(input);
     } else if (input[0] == "max") {
+        commandsCounter["max"] ++;
         handleMax(input);
     } else if (input[0] == "avg") {
+        commandsCounter["avg"] ++;
         handleAvg(input);
     } else if (input[0] == "predict") {
+        commandsCounter["predict"] ++;
         handlePredict(input);
     } else if (input[0] == "time") {
+        commandsCounter["time"] ++;
         handleTime();
     } else if (input[0] == "step") {
+        commandsCounter["step"] ++;
         handleStep();
+    } else if (input[0] == "stats") {
+        commandsCounter["stats"] ++;
+        handleStats();
     } else {
         printInvalidCommand();
     }

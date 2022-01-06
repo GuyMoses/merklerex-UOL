@@ -51,6 +51,10 @@ class AdvisorBotMain
         void handleStep();
         void printStep();
 
+        // stats
+        void printStats();
+        void handleStats();
+
         // common
         void printInvalidCommand();
 
@@ -62,4 +66,5 @@ class AdvisorBotMain
         // properties
         std::string currentTime;
         OrderBook orderBook{"20200317.csv"};
+        std::map<std::string, int> commandsCounter;
 };
