@@ -17,8 +17,12 @@ class OrderBook
         bool isProductInTimestamp(std::string product, std::string timestamp, OrderBookType type);
     /** return wether a product exists in timestamps or not*/
         bool isProductInLastTimestamps(std::string product, std::string currentTime, int lastTimestamps, OrderBookType type);
+    /** calcs prediction for product in last timestamps */
+        double calcProductPrediction(std::string product, std::string currentTime, int timesteps, OrderBookType type, std::string requestedOperator);
     /** calcs avg for product in last timestamps */
-    double calcProductInTimestampsAvg(std::string product, std::string currentTime, int lastTimestamps, OrderBookType type);
+        double calcProductInTimestampsAvg(std::string product, std::string currentTime, int lastTimestamps, OrderBookType type);
+    /** gets all orders for product in last timesteps */
+        std::vector<double> getOrdersInTimesteps(std::string product, std::string currentTime, int timesteps, OrderBookType type);
     /** return vector of Orders according to the sent filters*/
         std::vector<OrderBookEntry> getOrders(OrderBookType type, 
                                               std::string product, 

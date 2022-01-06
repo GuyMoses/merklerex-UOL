@@ -192,6 +192,7 @@ void AdvisorBotMain::handleAvg(std::vector<std::string> input)
             return;
         }
 
+        // calc avg
         double avg = orderBook.calcProductInTimestampsAvg(product, currentTime, timestamps, bookType);
 
         std::cout << "The avg " << product << " " << OrderBookEntry::bookTypeToString(bookType) << " over the last " << timestamps << " was " << avg << std::endl;
@@ -203,6 +204,47 @@ void AdvisorBotMain::handleAvg(std::vector<std::string> input)
 void AdvisorBotMain::printAvg()
 {
     std::cout << "avg" << "\t\t" << "Compute Average ask/bid for product in the last timestamps" << std::endl;
+}
+
+void AdvisorBotMain::handlePredict(std::vector<std::string> input)
+{
+    if (input.size() == 4) {
+        int timesteps = 5;
+
+        // handle bookType
+        OrderBookType bookType = OrderBookEntry::stringToOrderBookType(input[3]);
+        if (bookType == OrderBookType::unknown) {
+            std::cout << "book type is invalid. valid types are: ask/ bid" << std::endl;
+            return;
+        } else {
+            if (bookType == OrderBookType::ask) {
+                bookType = OrderBookType::bid;
+            } else {
+                bookType = OrderBookType::ask;
+            }
+        }
+
+        // handle product input
+        std::string product = input[2];
+        if (!orderBook.isProductInLastTimestamps(product, currentTime, timesteps, bookType)) { // did the product appear in the last 10 timesteps
+            std::cout << OrderBookEntry::bookTypeToString(bookType) << " for " << product << " not found in the last " << timesteps << " timestamps" << std::endl;
+            return;
+        }
+
+        // read max/min
+        std::string requestedOperator = input[1];
+        if (requestedOperator != "min" && requestedOperator != "max") {
+            std::cout << "operator is invalid. valid types are: min/ max" << std::endl;
+            return;
+        }
+
+        // calc prediction
+        double prediction = orderBook.calcProductPrediction(product, currentTime, timesteps, bookType, requestedOperator);
+
+        std::cout << "The predicted " << OrderBookEntry::bookTypeToString(bookType) << " price for " << product << " is " << prediction << std::endl;
+    } else {
+        printInvalidCommand();
+    }
 }
 
 void AdvisorBotMain::printPredict()
@@ -271,6 +313,8 @@ void AdvisorBotMain::processUserInput(std::vector<std::string> input)
         handleMax(input);
     } else if (input[0] == "avg") {
         handleAvg(input);
+    } else if (input[0] == "predict") {
+        handlePredict(input);
     } else if (input[0] == "time") {
         handleTime();
     } else if (input[0] == "step") {

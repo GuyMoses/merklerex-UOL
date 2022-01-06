@@ -120,6 +120,76 @@ double OrderBook::calcProductInTimestampsAvg(std::string product, std::string cu
     return sum / amountOfProducts;
 }
 
+/** gets all orders for product in last timesteps */
+std::vector<double> OrderBook::getOrdersInTimesteps(std::string product, std::string currentTime, int timesteps, OrderBookType type)
+{
+    int passedTimestamps = 0;
+    bool isInTimestamp = false;
+    std::string lastReadTimestamp = "-1";
+    std::vector<double> prices;
+
+    // traverser all orders reveresed (from end to start)
+    for (auto it = orders.rbegin(); it != orders.rend(); ++it)
+    {   
+        // verify we scan the orders previous to current time
+        if (!isInTimestamp && it->timestamp == currentTime) {
+            isInTimestamp = true;
+        }
+
+        // verify we scan the orders within the last amount of requested timestamps
+        if (passedTimestamps >= timesteps + 1) {
+            break;
+        }
+
+        // if the last read timestamp isn't the current timestamp
+        if (lastReadTimestamp != it->timestamp) {
+            // if read at least one timestamps and we're in the timestamp window
+            if (lastReadTimestamp != "-1" && isInTimestamp) {
+                passedTimestamps = passedTimestamps + 1;
+            }
+            lastReadTimestamp = it->timestamp;
+        }
+
+        // if we're in the time window, and the product & type exist
+        if (isInTimestamp && it->orderType == type && it->product == product) {
+            prices.push_back(it->price);
+        }
+    }
+
+    return prices;
+}
+
+/** calcs prediction for product in last timestamps */
+double OrderBook::calcProductPrediction(std::string product, std::string currentTime, int timesteps, OrderBookType type, std::string requestedOperator)
+{   
+    // calcing the prediction is done in the following way:
+    // get all orders of the product. (to predict ask we take all bids, to predict bid we take all asks)
+    // sort them by price
+    // if max is requested - calculate p90 price
+    // if min is requested - calculate p10 price
+
+    std::vector<double> orders = getOrdersInTimesteps(product, currentTime, timesteps, type);
+    std::sort(std::begin(orders), std::end(orders));
+
+    int amountOfItems = (int) (0.1 * orders.size()); // calc the amount of items to take only p90
+    
+    if (requestedOperator == "min") {
+        double sum = 0;
+        for(int i = 0; i < amountOfItems; i++) 
+        {
+            sum = sum + orders[i];
+        }
+        return sum / amountOfItems;
+    } else {
+        double sum = 0;
+        for(int i = orders.size()-1; i >= orders.size() - amountOfItems; i--) 
+        {
+            sum = sum + orders[i];
+        }
+        return sum / amountOfItems;
+    }
+}
+
 /** return vector of all know products in the dataset that match the timestamp*/
 std::vector<std::string> OrderBook::getKnownProductsInTimestamp(std::string timestamp, OrderBookType type)
 {
@@ -138,7 +208,7 @@ std::vector<std::string> OrderBook::getKnownProductsInTimestamp(std::string time
     // now flatten the map to a vector of strings
     for (auto const& e : prodMap)
     {
-        products.push_back(e.first);
+    products.push_back(e.first);
     }
 
     return products;

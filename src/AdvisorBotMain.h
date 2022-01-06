@@ -40,6 +40,7 @@ class AdvisorBotMain
         void printAvg();
 
         // predict
+        void handlePredict(std::vector<std::string> input);
         void printPredict();
 
         // time
