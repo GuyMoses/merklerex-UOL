@@ -23,6 +23,8 @@ class OrderBook
         double calcProductInTimestampsAvg(std::string product, std::string currentTime, int lastTimestamps, OrderBookType type);
     /** gets all orders for product in last timesteps */
         std::vector<double> getOrdersInTimesteps(std::string product, std::string currentTime, int timesteps, OrderBookType type);
+    /** return pair of vectors of Orders each with different bookType*/
+        std::pair<std::vector<OrderBookEntry>, std::vector<OrderBookEntry>> getOrdersByBidAsk(std::string product, std::string timestamp);
     /** return vector of Orders according to the sent filters*/
         std::vector<OrderBookEntry> getOrders(OrderBookType type, 
                                               std::string product, 

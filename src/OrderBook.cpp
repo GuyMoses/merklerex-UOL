@@ -214,6 +214,31 @@ std::vector<std::string> OrderBook::getKnownProductsInTimestamp(std::string time
     return products;
 }
 
+/** return pair of vectors of Orders each with different bookType*/
+std::pair<std::vector<OrderBookEntry>, std::vector<OrderBookEntry>> OrderBook::getOrdersByBidAsk(std::string product, std::string timestamp)
+{
+    std::vector<OrderBookEntry> asks_sub;
+    std::vector<OrderBookEntry> bids_sub;
+    
+    for (OrderBookEntry& e : orders)
+    {
+        if (e.timestamp > timestamp) {
+            break;
+        }
+
+        if (e.product == product && 
+            e.timestamp == timestamp )
+            {
+                if (e.orderType == OrderBookType::ask) {
+                    asks_sub.push_back(e);
+                } else if (e.orderType == OrderBookType::bid) {
+                    bids_sub.push_back(e);
+                }
+            }
+    }
+    return std::make_pair(asks_sub, bids_sub);
+}
+
 /** return vector of Orders according to the sent filters*/
 std::vector<OrderBookEntry> OrderBook::getOrders(OrderBookType type, 
                                         std::string product, 
@@ -222,6 +247,10 @@ std::vector<OrderBookEntry> OrderBook::getOrders(OrderBookType type,
     std::vector<OrderBookEntry> orders_sub;
     for (OrderBookEntry& e : orders)
     {
+        if (e.timestamp > timestamp) {
+            break;
+        }
+
         if (e.orderType == type && 
             e.product == product && 
             e.timestamp == timestamp )
@@ -285,14 +314,19 @@ void OrderBook::insertOrder(OrderBookEntry& order)
 
 std::vector<OrderBookEntry> OrderBook::matchAsksToBids(std::string product, std::string timestamp)
 {
-// asks = orderbook.asks
-    std::vector<OrderBookEntry> asks = getOrders(OrderBookType::ask, 
-                                                 product, 
-                                                 timestamp);
-// bids = orderbook.bids
-    std::vector<OrderBookEntry> bids = getOrders(OrderBookType::bid, 
-                                                 product, 
-                                                    timestamp);
+// // asks = orderbook.asks
+//     std::vector<OrderBookEntry> asks = getOrders(OrderBookType::ask, 
+//                                                  product, 
+//                                                  timestamp);
+// // bids = orderbook.bids
+//     std::vector<OrderBookEntry> bids = getOrders(OrderBookType::bid, 
+//                                                  product, 
+//                                                     timestamp);
+
+    std::pair<std::vector<OrderBookEntry>, std::vector<OrderBookEntry>> orders = getOrdersByBidAsk(product, timestamp);
+    std::vector<OrderBookEntry> bids = orders.first;
+    std::vector<OrderBookEntry> asks = orders.second;
+
 
     // sales = []
     std::vector<OrderBookEntry> sales; 
