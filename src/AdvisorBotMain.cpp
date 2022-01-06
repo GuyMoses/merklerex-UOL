@@ -11,6 +11,7 @@ AdvisorBotMain::AdvisorBotMain()
 
 }
 
+/** init function */
 void AdvisorBotMain::init()
 {
     currentTime = orderBook.getEarliestTime();
@@ -25,12 +26,13 @@ void AdvisorBotMain::init()
     }
 }
 
-
+/** Print title*/
 void AdvisorBotMain::printTitle()
 {   
     std::cout << "Please enter a command, or help for a list of commands" << std::endl;
 }
 
+/** handle help command*/
 void AdvisorBotMain::handleHelp(std::vector<std::string> input)
 {
     if (input.size() == 1) {
@@ -45,6 +47,7 @@ void AdvisorBotMain::handleHelp(std::vector<std::string> input)
     }
 }
 
+/** handle help command with arguments*/
 void AdvisorBotMain::handleHelpSpecific(std::string command)
 {
     if (command == "prod") {
@@ -67,6 +70,7 @@ void AdvisorBotMain::handleHelpSpecific(std::string command)
     }
 }
 
+/** print help */
 void AdvisorBotMain::printHelp()
 {
     std::cout << std::endl;
@@ -77,7 +81,14 @@ void AdvisorBotMain::printHelp()
     std::cout << std::endl;
 
     std::cout << "help" << "\t\t" << "Get help on the available commands" << std::endl;
+    std::cout << std::endl;
     std::cout << "help <cmd>" << "\t" << "Get help on the specified <cmd> command" << std::endl;
+    std::cout << "\t\t" << "usage: help <command>" << std::endl;
+    std::cout << "\t\t" << "example: help avg" << std::endl;
+    std::cout << std::endl;
+    
+
+    // rest of commands
     printProd();
     printMin();
     printMax();
@@ -89,6 +100,7 @@ void AdvisorBotMain::printHelp()
     std::cout << std::endl;
 }
 
+/** lists all known products */
 void AdvisorBotMain::handleProd()
 {
     std::cout << "Available products:" << std::endl;
@@ -100,11 +112,15 @@ void AdvisorBotMain::handleProd()
     std::cout << std::endl;    
 }
 
+/** print products command help*/
 void AdvisorBotMain::printProd()
 {
     std::cout << "prod" << "\t\t" << "List all available products" << std::endl;
+    std::cout << "\t\t" << "usage: prod" << std::endl;
+    std::cout << std::endl;
 }
 
+/** print minimum price for product of specific type (bid/ask) */
 void AdvisorBotMain::handleMin(std::vector<std::string> input)
 {   
     if (input.size() == 3) {
@@ -132,11 +148,16 @@ void AdvisorBotMain::handleMin(std::vector<std::string> input)
     }
 }
 
+/** print min command help*/
 void AdvisorBotMain::printMin()
 {
     std::cout << "min" << "\t\t" << "Find minimum bid or ask for product in current time step" << std::endl;
+    std::cout << "\t\t" << "usage: min <product> <type>" << std::endl;
+    std::cout << "\t\t" << "example: min ETH/BTC ask" << std::endl;
+    std::cout << std::endl;
 }
 
+/** print maximum price for product of specific type (bid/ask) */
 void AdvisorBotMain::handleMax(std::vector<std::string> input)
 {
     if (input.size() == 3) {
@@ -164,11 +185,16 @@ void AdvisorBotMain::handleMax(std::vector<std::string> input)
     }
 }
 
+/** print max command help*/
 void AdvisorBotMain::printMax()
 {   
     std::cout << "max" << "\t\t" << "Find maximum bid or ask for product in current time step" << std::endl;
+    std::cout << "\t\t" << "usage: max <product> <type>" << std::endl;
+    std::cout << "\t\t" << "example: max ETH/BTC ask" << std::endl;
+    std::cout << std::endl;
 }
 
+/** print avg price for product of specific type (bid/ask) in requested amount of timestemps*/
 void AdvisorBotMain::handleAvg(std::vector<std::string> input)
 {
     if (input.size() == 4) {
@@ -204,11 +230,16 @@ void AdvisorBotMain::handleAvg(std::vector<std::string> input)
     }
 }
 
+/** print avg command help*/
 void AdvisorBotMain::printAvg()
 {
     std::cout << "avg" << "\t\t" << "Compute Average ask/bid for product in the last timestamps" << std::endl;
+    std::cout << "\t\t" << "usage: avg <product> <type> <amount-of-timestemps>" << std::endl;
+    std::cout << "\t\t" << "example: avg ETH/BTC ask 10" << std::endl;
+    std::cout << std::endl;
 }
 
+/** prints a prediction for product & type price according to last 5 timesteps*/
 void AdvisorBotMain::handlePredict(std::vector<std::string> input)
 {
     if (input.size() == 4) {
@@ -220,6 +251,7 @@ void AdvisorBotMain::handlePredict(std::vector<std::string> input)
             std::cout << "book type is invalid. valid types are: ask/ bid" << std::endl;
             return;
         } else {
+            // make prediction according to the other bookType
             if (bookType == OrderBookType::ask) {
                 bookType = OrderBookType::bid;
             } else {
@@ -250,26 +282,30 @@ void AdvisorBotMain::handlePredict(std::vector<std::string> input)
     }
 }
 
+/** print prediction command help */
 void AdvisorBotMain::printPredict()
 {
     std::cout << "predict" << "\t\t" << "Predict max or min ask or bid for the sent product for the next time" << std::endl;
+    std::cout << "\t\t" << "usage: predict <max/min> <product> <type>" << std::endl;
+    std::cout << "\t\t" << "example: predict max ETH/BTC ask" << std::endl;
+    std::cout << std::endl;
 }
 
+/** print current time */
 void AdvisorBotMain::handleTime()
 {
     std::cout << "Current time is: " << currentTime << std::endl;
 }
 
+/** print time command help */
 void AdvisorBotMain::printTime()
 {
     std::cout << "time" << "\t\t" << "State current time in dataset, i.e. which timeframe are we looking at" << std::endl;
+    std::cout << "\t\t" << "usage: time" << std::endl;
+    std::cout << std::endl;
 }
 
-void AdvisorBotMain::printStep()
-{
-    std::cout << "step" << "\t\t" << "Move to next time step" << std::endl;
-}
-   
+/** goes to next time step */
 void AdvisorBotMain::handleStep()
 {
     std::cout << "Going to next time frame. " << std::endl;
@@ -277,11 +313,23 @@ void AdvisorBotMain::handleStep()
     handleTime();
 }
 
+/** print step command help */
+void AdvisorBotMain::printStep()
+{
+    std::cout << "step" << "\t\t" << "Move to next time step" << std::endl;
+    std::cout << "\t\t" << "usage: step" << std::endl;
+    std::cout << std::endl;
+}
+
+/** print stats command help */
 void AdvisorBotMain::printStats()
 {
     std::cout << "stats" << "\t\t" << "Print AdvisorBot stats" << std::endl;
+    std::cout << "\t\t" << "usage: stats" << std::endl;
+    std::cout << std::endl;
 }
 
+/** print stats regarding the AdvisorBot */
 void AdvisorBotMain::handleStats()
 {
     std::cout << "# of commands calls:" << std::endl;
@@ -291,11 +339,13 @@ void AdvisorBotMain::handleStats()
     }
 }
 
+/** print invalid command text */
 void AdvisorBotMain::printInvalidCommand()
 {
     std::cout << "Invalid input. type help, to see available commands" << std::endl;
 }
  
+/** gets input from user, splits them by spaces using tokenizer */
 std::vector<std::string> AdvisorBotMain::getUserInput()
 {
     std::string rawInput;
@@ -312,6 +362,7 @@ std::vector<std::string> AdvisorBotMain::getUserInput()
     return emptyArary;
 }
 
+/** process user input, calls the right command */
 void AdvisorBotMain::processUserInput(std::vector<std::string> input)
 {
     if (input.size() == 0) {
