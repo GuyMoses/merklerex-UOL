@@ -24,7 +24,7 @@ class AdvisorBotMain
         /** handle help command*/
         void handleHelp(std::vector<std::string> input);
         /** handle help command with arguments*/
-        void handleHelpSpecific(std::string command);
+        void handleHelp(std::string command);
         /** print help */
         void printHelp();
 

@@ -35,15 +35,15 @@ std::vector<std::string> OrderBook::getKnownProducts()
 /** return wether a product exists in timestamp or not*/
 bool OrderBook::isProductInTimestamp(std::string product, std::string timestamp, OrderBookType type)
 {
-    std::vector<std::string> products = getKnownProductsInTimestamp(timestamp, type);
+    std::vector<std::string> products = getKnownProducts(timestamp, type);
     if (std::find(products.begin(), products.end(), product) == products.end()) {
         return false;
     }
     return true;
 }
 
-/** return wether a product exists in timestamps or not*/
-bool OrderBook::isProductInLastTimestamps(std::string product, std::string currentTime, int lastTimestamps, OrderBookType type)
+/** return wether a product exists in last timesteps or not*/
+bool OrderBook::isProductInTimestamp(std::string product, std::string currentTime, OrderBookType type, int lastTimestamps)
 {
     int passedTimestamps = 0;
     bool isInTimestamp = false;
@@ -191,7 +191,7 @@ double OrderBook::calcProductPrediction(std::string product, std::string current
 }
 
 /** return vector of all know products in the dataset that match the timestamp*/
-std::vector<std::string> OrderBook::getKnownProductsInTimestamp(std::string timestamp, OrderBookType type)
+std::vector<std::string> OrderBook::getKnownProducts(std::string timestamp, OrderBookType type)
 {
     std::vector<std::string> products;
 

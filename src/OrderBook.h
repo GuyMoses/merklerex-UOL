@@ -12,11 +12,11 @@ class OrderBook
     /** return vector of all know products in the dataset*/
         std::vector<std::string> getKnownProducts();
     /** return vector of all know products in the dataset that match the timestamp*/
-        std::vector<std::string> getKnownProductsInTimestamp(std::string timestamp, OrderBookType type);
+        std::vector<std::string> getKnownProducts(std::string timestamp, OrderBookType type);
     /** return wether a product exists in timestamp or not*/
         bool isProductInTimestamp(std::string product, std::string timestamp, OrderBookType type);
-    /** return wether a product exists in timestamps or not*/
-        bool isProductInLastTimestamps(std::string product, std::string currentTime, int lastTimestamps, OrderBookType type);
+    /** return wether a product exists in last timesteps or not*/
+        bool isProductInTimestamp(std::string product, std::string currentTime, OrderBookType type, int lastTimestamps);
     /** calcs prediction for product in last timestamps */
         double calcProductPrediction(std::string product, std::string currentTime, int timesteps, OrderBookType type, std::string requestedOperator);
     /** calcs avg for product in last timestamps */

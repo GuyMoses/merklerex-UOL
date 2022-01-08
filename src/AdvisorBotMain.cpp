@@ -40,7 +40,7 @@ void AdvisorBotMain::handleHelp(std::vector<std::string> input)
         printHelp();
     } else if (input.size() == 2) {
          // if second argument is passed (help <command>)
-        handleHelpSpecific(input[1]);
+        handleHelp(input[1]);
     } else {
          // invalid number of arguments
         printInvalidCommand();
@@ -48,7 +48,7 @@ void AdvisorBotMain::handleHelp(std::vector<std::string> input)
 }
 
 /** handle help command with arguments*/
-void AdvisorBotMain::handleHelpSpecific(std::string command)
+void AdvisorBotMain::handleHelp(std::string command)
 {
     if (command == "prod") {
         printProd();
@@ -206,9 +206,9 @@ void AdvisorBotMain::handleAvg(std::vector<std::string> input)
         }
 
         // handle timestamps input
-        int timestamps = -1;
+        int timesteps = -1;
         try {
-            timestamps = std::stoi(input[3]);
+            timesteps = std::stoi(input[3]);
         } catch (const std::exception& e) {
             std::cout << "amount of timestamps is invalid. valid inputs are: numbers (1,2,3..)" << std::endl; 
             return;
@@ -216,15 +216,15 @@ void AdvisorBotMain::handleAvg(std::vector<std::string> input)
 
         // handle product input
         std::string product = input[1];
-        if (!orderBook.isProductInLastTimestamps(product, currentTime, timestamps, bookType)) {
-            std::cout << OrderBookEntry::bookTypeToString(bookType) << " for " << product << " not found in the last " << timestamps << " timestamps" << std::endl;
+        if (!orderBook.isProductInTimestamp(product, currentTime, bookType, timesteps)) {
+            std::cout << OrderBookEntry::bookTypeToString(bookType) << " for " << product << " not found in the last " << timesteps << " timestamps" << std::endl;
             return;
         }
 
         // calc avg
-        double avg = orderBook.calcProductInTimestampsAvg(product, currentTime, timestamps, bookType);
+        double avg = orderBook.calcProductInTimestampsAvg(product, currentTime, timesteps, bookType);
 
-        std::cout << "The avg " << product << " " << OrderBookEntry::bookTypeToString(bookType) << " over the last " << timestamps << " was " << avg << std::endl;
+        std::cout << "The avg " << product << " " << OrderBookEntry::bookTypeToString(bookType) << " over the last " << timesteps << " was " << avg << std::endl;
     } else {
         printInvalidCommand();
     }
@@ -261,7 +261,7 @@ void AdvisorBotMain::handlePredict(std::vector<std::string> input)
 
         // handle product input
         std::string product = input[2];
-        if (!orderBook.isProductInLastTimestamps(product, currentTime, timesteps, bookType)) { // did the product appear in the last 10 timesteps
+        if (!orderBook.isProductInTimestamp(product, currentTime, bookType, timesteps)) { // did the product appear in the last 10 timesteps
             std::cout << OrderBookEntry::bookTypeToString(bookType) << " for " << product << " not found in the last " << timesteps << " timestamps" << std::endl;
             return;
         }
